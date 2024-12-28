@@ -18,7 +18,7 @@ public class LCABinaryTree {
      * Find the path from root to p and q.
      * Compare both the paths to find the last common node which is the LCA.
      * <p>
-     * TC: O(3N)
+     * TC: O(2N + H)
      * SC: O(3H)
      *
      * @param root
