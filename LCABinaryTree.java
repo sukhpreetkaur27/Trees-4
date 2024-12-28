@@ -18,19 +18,18 @@ public class LCABinaryTree {
      * Find the path from root to p and q.
      * Compare both the paths to find the last common node which is the LCA.
      * <p>
-     * TC: O(2N + H)
-     * SC: O(3H)
+     * TC: O(N + H)
+     * SC: O(4H)
      *
      * @param root
      * @param p
      * @param q
      * @return
      */
-    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+    public TreeNode lca_brute(TreeNode root, TreeNode p, TreeNode q) {
         List<TreeNode> pathP = new ArrayList<>();
-        dfs(root, p, pathP);
         List<TreeNode> pathQ = new ArrayList<>();
-        dfs(root, q, pathQ);
+        dfs(root, p, q, new ArrayList<>(), pathP, pathQ);
         return lca(pathP, pathQ);
     }
 
@@ -47,24 +46,32 @@ public class LCABinaryTree {
         return lca;
     }
 
-    private boolean dfs(TreeNode root, TreeNode p, List<TreeNode> path) {
+    private void dfs(TreeNode root, TreeNode p, TreeNode q, List<TreeNode> path, List<TreeNode> pathP, List<TreeNode> pathQ) {
         if (root == null) {
-            return false;
+            return;
         }
-        int size = path.size();
+        int pathSize = path.size();
+        int pSize = pathP.size();
+        int qSize = pathQ.size();
         path.add(root);
         if (root == p) {
-            return true;
+            // if pathP has been found
+            pathP.addAll(path);
         }
-        boolean left = dfs(root.left, p, path);
-        if (left) {
-            return true;
+        if (root == q) {
+            // if pathQ has been found
+            pathQ.addAll(path);
         }
-        boolean right = dfs(root.right, p, path);
-        if (!right) {
-            path.remove(size);
+        // if either path hasn't been found --> explore left arm
+        if (pSize == 0 || qSize == 0) {
+            dfs(root.left, p, q, path, pathP, pathQ);
         }
-        return right;
+        // if either path hasn't been found --> explore right arm
+        if (pSize == 0 || qSize == 0) {
+            dfs(root.right, p, q, path, pathP, pathQ);
+        }
+        // backtrack
+        path.remove(pathSize);
     }
 
     /**
