@@ -1,5 +1,8 @@
 // LC 230
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * NOTE: InOrder traversal of a BST == sorted order
  * Maintain a counter to count for the k-th element reached during this traversal.
@@ -47,7 +50,62 @@ public class KthSmallestElementBST {
         if (k[0] == 0) {
             ans[0] = root;
         }
-        kthSmallest_inorder_dfs(root.right, k, ans);
+        /*
+         * avoid unnecessary iterations
+         */
+        else if (k[0] > 0) {
+            kthSmallest_inorder_dfs(root.right, k, ans);
+        }
+    }
+
+    /**
+     * int-based recursion
+     *
+     * @param root
+     * @param k
+     * @return
+     */
+    public int kthSmallest_inorder_2(TreeNode root, int k) {
+        return kthSmallest_inorder_dfs_2(root, new int[]{k});
+    }
+
+    private int kthSmallest_inorder_dfs_2(TreeNode root, int[] k) {
+        if (root == null) {
+            return 0;
+        }
+        int result = kthSmallest_inorder_dfs_2(root.left, k);
+        k[0]--;
+        if (k[0] == 0) {
+            result = root.val;
+        }
+        /*
+         * avoid unnecessary iterations
+         */
+        else if (k[0] > 0) {
+            result = kthSmallest_inorder_dfs_2(root.right, k);
+        }
+        return result;
+    }
+
+    public int kthSmallest_inorder_iterative(TreeNode root, int k) {
+        int result = 0;
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode curr = root;
+        while (!stack.isEmpty() || curr != null) {
+            if (curr != null) {
+                stack.push(curr);
+                curr = curr.left;
+            } else {
+                TreeNode top = stack.pop();
+                k--;
+                if (k == 0) {
+                    result = top.val;
+                    break;
+                }
+                curr = top.right;
+            }
+        }
+        return result;
     }
 
     /**
