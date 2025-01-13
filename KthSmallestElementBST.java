@@ -31,8 +31,13 @@ public class KthSmallestElementBST {
      *
      * @param root
      * @param k
-     * @param ans
      */
+    public int kthSmallest_inorder(TreeNode root, int k) {
+        TreeNode[] ans = new TreeNode[1];
+        kthSmallest_inorder_dfs(root, new int[]{k}, ans);
+        return ans[0].val;
+    }
+
     private void kthSmallest_inorder_dfs(TreeNode root, int[] k, TreeNode[] ans) {
         if (root == null || k[0] == 0) {
             return;
